@@ -1,0 +1,50 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  background: #f8f9fa;
+  color: #333;
+}
+
+header {
+  background: #f2c6cc;
+  padding: 1rem;
+  text-align: center;
+}
+
+nav {
+  display: flex;
+  overflow-x: auto;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+nav button {
+  flex: 1;
+  padding: 0.8rem;
+  border: none;
+  background: none;
+  font-size: 1rem;
+}
+
+main {
+  padding: 1rem;
+}
+
+section {
+  display: none;
+}
+
+section.active {
+  display: block;
+}
+
+ul {
+  padding-left: 1.2rem;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: #777;
+}

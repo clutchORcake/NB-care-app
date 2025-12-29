@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Newborn Care Cheat Sheet</title>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+
+<header>
+  <h1>👶 Newborn Care</h1>
+  <p>Quick guide for uncles, aunties & new parents</p>
+</header>
+
+<nav>
+  <button onclick="showSection('cheat')">🧔 Uncle Cheat Sheet</button>
+  <button onclick="showSection('cry')">😭 Cry Decoder</button>
+  <button onclick="showSection('terms')">📘 Baby Terms</button>
+  <button onclick="showSection('dont')">🚫 What NOT To Do</button>
+</nav>
+
+<main>
+
+<section id="cheat" class="active">
+<h2>🧔 Uncle Cheat Sheet</h2>
+<ul>
+  <li>Wash hands before touching baby</li>
+  <li>Support head & neck always</li>
+  <li>Feed every 2–3 hours</li>
+  <li>Burp after feeds</li>
+  <li>Sleep on back, empty crib</li>
+  <li>Crying = communication</li>
+</ul>
+</section>
+
+<section id="cry">
+<h2>😭 Cry Decoder</h2>
+<ul>
+  <li><b>Rooting / sucking hands</b> → Hungry</li>
+  <li><b>Squirming, legs up</b> → Gas</li>
+  <li><b>Whiny, rubbing eyes</b> → Tired</li>
+  <li><b>Loud after noise</b> → Overstimulated</li>
+</ul>
+<p><b>Order:</b> Diaper → Feed → Burp → Cuddle</p>
+</section>
+
+<section id="terms">
+<h2>📘 Baby Terms</h2>
+<p><b>Rooting:</b> Turning head, opening mouth, searching to feed</p>
+<p><b>Burping:</b> Helping baby release swallowed air after feeding</p>
+<p><b>Swaddling:</b> Wrapping baby snugly to feel secure</p>
+</section>
+
+<section id="dont">
+<h2>🚫 What NOT To Do</h2>
+<ul>
+  <li>Never shake the baby</li>
+  <li>No kissing face or hands</li>
+  <li>No water, honey, or food</li>
+  <li>No pillows or toys in crib</li>
+  <li>No smoking near baby</li>
+</ul>
+</section>
+
+</main>
+
+<footer>
+  <p>Made with ❤️ for tired parents</p>
+</footer>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+
+</body>
+</html>
