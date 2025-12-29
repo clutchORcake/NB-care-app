@@ -3,6 +3,8 @@ body {
   margin: 0;
   background: #f8f9fa;
   color: #333;
+  font-size: 18px;
+  line-height: 1.6;
 }
 
 header {
@@ -24,6 +26,10 @@ nav button {
   border: none;
   background: none;
   font-size: 1rem;
+  cursor: pointer;
+  border-radius: 8px;
+  margin: 4px;
+  background: #f7f7f7;
 }
 
 main {
