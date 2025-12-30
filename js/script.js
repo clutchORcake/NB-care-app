@@ -7,7 +7,7 @@ function checkPassword() {
     window.location.href = "nav.html";
   } else {
     document.getElementById('error-msg').innerHTML = `
-      <p style="color:#ff69b4; font-weight:bold;">Access Denied 🚫 cuz /"Jasmine is not mine/" xD</p>
+      <p style="color:#ff69b4; font-weight:bold;">Access Denied 🚫 cuz "Jasmine is not mine" xD</p>
       <img src="images/denied.png" alt="Access Denied" style="width:200px; margin-top:10px;">
     `;
   }
@@ -42,5 +42,6 @@ if('serviceWorker' in navigator){
 //     .then(() => console.log('Service Worker Registered'))
 //     .catch(err => console.log('SW registration failed:', err));
 // }
+
 
 
