@@ -1,12 +1,20 @@
 {
-  "name": "Newborn Care Cheat Sheet",
-  "short_name": "Newborn Care",
-  "start_url": ".",
+  "name": "Uncle's Baby Cheat Sheet",
+  "short_name": "Baby Cheat Sheet",
+  "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#f2c6cc",
+  "background_color": "#fff0f5",
+  "theme_color": "#ff69b4",
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }
