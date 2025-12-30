@@ -1,6 +1,6 @@
 function checkPassword() {
   const input = document.getElementById('passwordInput').value;
-  const correctPassword = "uncle1234"; // hard-coded for local testing
+  const correctPassword = "J-ismine212"; // hard-coded for local testing
 
   if(input === correctPassword) {
     // Redirect to main navigation page
@@ -8,7 +8,7 @@ function checkPassword() {
   } else {
     document.getElementById('error-msg').innerHTML = `
       <p style="color:#ff69b4; font-weight:bold;">Access Denied 🚫</p>
-      <img src="images/denied.png" alt="Access Denied" style="width:200px; margin-top:10px;">
+      <img src="images/denied.png" alt="Access Denied! cuz /"Jasmine is not mine/" xD" style="width:200px; margin-top:10px;">
     `;
   }
 }
@@ -42,3 +42,4 @@ if('serviceWorker' in navigator){
 //     .then(() => console.log('Service Worker Registered'))
 //     .catch(err => console.log('SW registration failed:', err));
 // }
+
