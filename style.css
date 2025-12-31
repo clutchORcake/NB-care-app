@@ -150,20 +150,34 @@ section {
 }
 
 /* ------------------------------
-   Navigation links in nav.html
+   Navigation links inside center container
 --------------------------------*/
-nav a {
-  display: inline-block;
-  margin: 10px;
-  text-decoration: none;
-  color: #ff1493;
-  font-weight: bold;
-  transition: color 0.3s;
+.center-container ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
 }
 
-nav a:hover {
-  color: #ff69b4;
+.center-container li {
+  margin: 12px 0;
 }
+
+.center-container a {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #ff69b4;
+  color: #fff;
+  border-radius: 14px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.center-container a:hover {
+  background: #ff1493;
+  transform: scale(1.05);
+}
+
 
 /* ------------------------------
    Animations
@@ -182,3 +196,34 @@ nav a:hover {
 .page-container {
   animation: fadeIn 1s ease-in;
 }
+
+.logout-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* ------------------------------
+   Language toggle buttons
+--------------------------------*/
+.lang-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.lang-toggle button {
+  min-width: 60px;     /* forces same width */
+  height: 36px;        /* forces same height */
+  padding: 0;          /* override content-based padding */
+  border-radius: 12px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 36px;   /* vertical centering */
+}
+
+.lang-toggle button.active {
+  background: #ff1493;
+}
+

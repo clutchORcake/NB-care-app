@@ -1,15 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+  if (sessionStorage.getItem("authenticated") !== "true") {
+    window.location.href = "index.html";
+  }
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Warning Signs</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="lang-toggle">
+  <button onclick="setLanguage('en')">EN</button>
+  <button onclick="setLanguage('zh')">中文</button>
+</div>
+
+<script src="js/lang.js"></script>
   <div class="page-container">
     <header>
-      <h1>⚠️ Warning Signs</h1>
+      <h1 data-i18n="warn_title">⚠️ Warning Signs</h1>
       <nav>
         <a href="nav.html">⬅ Back to Menu</a>
       </nav>
@@ -17,13 +28,14 @@
 <div class="page-container">
 <section>
       <ul>
-        <li>Fever ≥ 38°C (100.4°F)</li>
-        <li>No feeding</li>
-        <li>Very weak or unusual cry</li>
-        <li>Blue lips or face</li>
-        <li>Extreme lethargy</li>
+        <li data-i18n="warn_fever">Fever ≥ 38°C (100.4°F)</li>
+        <li data-i18n="warn_feed">No feeding</li>
+        <li data-i18n="warn_cry">Very weak or unusual cry</li>
+        <li data-i18n="warn_blue">Blue lips or face</li>
+        <li data-i18n="warn_lethargy">Extreme lethargy</li>
       </ul>
-      <p><b>Trust your instincts.</b></p>
+
+      <p><b data-i18n="warn_trust">Trust your instincts.</b></p>
     </section>
 </div>
     

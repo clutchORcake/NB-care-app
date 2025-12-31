@@ -1,30 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+  if (sessionStorage.getItem("authenticated") !== "true") {
+    window.location.href = "index.html";
+  }
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Basic Cheat Sheet</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="lang-toggle">
+  <button onclick="setLanguage('en')">EN</button>
+  <button onclick="setLanguage('zh')">中文</button>
+</div>
+
+<script src="js/lang.js"></script>
+
   <div class="page-container">
     <header>
-      <h1>👶 Basic Handling</h1>
+      <h1 data-i18n="cs_title">👶 Basic Handling</h1>
       <nav>
         <a href="nav.html">⬅ Back to Menu</a>
       </nav>
     </header>
 <div class="page-container">
 <section>
-      <ul>
-        <li>Wash hands before touching baby</li>
-        <li>Support head & neck always</li>
-        <li>Feed every 2–3 hours</li>
-        <li>Burp after feeds</li>
-        <li>Sleep on back, empty crib</li>
-        <li>Crying = communication</li>
-      </ul>
-    </section>
+    <ul>
+      <li data-i18n="cs_wash">Wash hands before touching baby</li>
+      <li data-i18n="cs_support">Support head & neck always</li>
+      <li data-i18n="cs_feed">Feed every 2–3 hours</li>
+      <li data-i18n="cs_burp">Burp after feeds</li>
+      <li data-i18n="cs_sleep">Sleep on back, empty crib</li>
+      <li data-i18n="cs_cry">Crying = communication</li>
+    </ul>
+  </section>
 </div>
     
   </div>

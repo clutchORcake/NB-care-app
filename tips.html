@@ -1,24 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+  if (sessionStorage.getItem("authenticated") !== "true") {
+    window.location.href = "index.html";
+  }
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Baby Care Tips</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="lang-toggle">
+  <button onclick="setLanguage('en')">EN</button>
+  <button onclick="setLanguage('zh')">中文</button>
+</div>
+
+<script src="js/lang.js"></script>
   <div class="page-container">
     <header>
-      <h1>🍼 Baby Care Tips</h1>
+      <h1 data-i18n="tips_title">🍼 Baby Care Tips</h1>
       <nav>
         <a href="nav.html">⬅ Back to Menu</a>
       </nav>
     </header>
 <div class="page-container">
 <section>
-      <p><b>Rooting:</b> Turning head, opening mouth, searching to feed</p>
-      <p><b>Burping:</b> Helping baby release swallowed air after feeding</p>
-      <p><b>Swaddling:</b> Wrapping baby snugly to feel secure</p>
+      <p><b data-i18n="tips_rooting_label">Rooting:</b>
+        <span data-i18n="tips_rooting">Turning head, opening mouth, searching to feed</span>
+      </p>
+
+      <p><b data-i18n="tips_burp_label">Burping:</b>
+        <span data-i18n="tips_burp">Helping baby release swallowed air after feeding</span>
+      </p>
+
+      <p><b data-i18n="tips_swaddle_label">Swaddling:</b>
+        <span data-i18n="tips_swaddle">Wrapping baby snugly to feel secure</span>
+      </p>
+
+      <hr>
+
+      <p data-i18n="tips_talk">Talk and sing to the baby often</p>
+      <p data-i18n="tips_skin">Skin-to-skin contact helps bonding</p>
+      <p><i data-i18n="tips_unique">Every baby is different</i></p>
     </section>
 </div>
     

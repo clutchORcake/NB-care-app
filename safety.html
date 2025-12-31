@@ -1,15 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+  if (sessionStorage.getItem("authenticated") !== "true") {
+    window.location.href = "index.html";
+  }
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Safety Rules</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="lang-toggle">
+  <button onclick="setLanguage('en')">EN</button>
+  <button onclick="setLanguage('zh')">中文</button>
+</div>
+
+<script src="js/lang.js"></script>
   <div class="page-container">
     <header>
-      <h1>🛡 Safety Rules</h1>
+      <h1 data-i18n="safe_title">🛡 Safety Rules</h1>
       <nav>
         <a href="nav.html">⬅ Back to Menu</a>
       </nav>
@@ -17,11 +28,11 @@
 <div class="page-container">
 <section>
       <ul>
-        <li>Never shake the baby</li>
-        <li>No kissing face or hands</li>
-        <li>No water, honey, or food</li>
-        <li>No pillows or toys in crib</li>
-        <li>No smoking near baby</li>
+        <li data-i18n="safe_shake">Never shake the baby</li>
+        <li data-i18n="safe_kiss">No kissing face or hands</li>
+        <li data-i18n="safe_food">No water, honey, or food</li>
+        <li data-i18n="safe_crib">No pillows or toys in crib</li>
+        <li data-i18n="safe_smoke">No smoking near baby</li>
       </ul>
     </section>
 </div>

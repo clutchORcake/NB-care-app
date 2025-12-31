@@ -7,16 +7,39 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="center-container">
-    <h1>👶 Uncle Cheat Sheet</h1>
-    <p>Welcome! Choose a section to view:</p>
-    <ul>
-      <li><a href="cheatsheet.html">Basic Cheat Sheet</a></li>
-      <li><a href="signals.html">Understanding Baby Signals</a></li>
-      <li><a href="safety.html">Safety Rules</a></li>
-      <li><a href="warning.html">Warning Signs</a></li>
-      <li><a href="tips.html">Baby Care Tips</a></li>
-    </ul>
-  </div>
+  <div class="lang-toggle">
+  <button onclick="setLanguage('en')">EN</button>
+  <button onclick="setLanguage('zh')">中文</button>
+</div>
+
+
+<script src="js/lang.js"></script>
+<div class="center-container">
+  <h1 data-i18n="nav_title">Uncle Cheat Sheet</h1>
+  <p data-i18n="nav_subtitle">A simple baby care manual 💕</p>
+
+  <ul class="nav-list">
+    <li><a href="cheatsheet.html" data-i18n="nav_cheatsheet">Basic Cheat Sheet</a></li>
+    <li><a href="signals.html" data-i18n="nav_signals">Baby Signals</a></li>
+    <li><a href="safety.html" data-i18n="nav_safety">Safety Rules</a></li>
+    <li><a href="warning.html" data-i18n="nav_warning">Warning Signs</a></li>
+    <li><a href="tips.html" data-i18n="nav_tips">Baby Care Tips</a></li>
+  </ul>
+</div>
+
+  
+
+<div class="logout-container">
+  <button onclick="logout()" data-i18n="nav_logout">Logout</button>
+</div>
+
+
+<script>
+function logout() {
+  sessionStorage.removeItem("authenticated");
+  window.location.href = "index.html";
+}
+</script>
+
 </body>
 </html>
