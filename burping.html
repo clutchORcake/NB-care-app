@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+  if (sessionStorage.getItem("authenticated") !== "true") {
+    window.location.href = "burping.html";
+  }
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Burping Baby</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="lang-toggle">
+  <button onclick="setLanguage('en')">EN</button>
+  <button onclick="setLanguage('zh')">中文</button>
+</div>
+
+<script src="js/lang.js"></script>
+
+<div class="page-container">
+  <header>
+  <h2 data-i18n="burp_title">Burping Your Baby</h2>
+  <nav>
+        <a href="nav.html">⬅ Back to Menu</a>
+      </nav>
+  </header>
+
+  <p data-i18n="burp_intro">
+    If baby cries after feeding, trapped air may be the cause.
+  </p>
+<div class="page-container">
+<section>
+    <h3 data-i18n="burp_method_title">3 Gentle Burping Methods</h3>
+
+    <ul>
+      <li data-i18n="burp_method1"></li>
+      <li data-i18n="burp_method2"></li>
+      <li data-i18n="burp_method3"></li>
+    </ul>
+
+    <p>
+      <b data-i18n="burp_tip_label">Tip:</b>
+      <span data-i18n="burp_tip"></span>
+    </p>
+  </section>
+</div>
+  
+</div>
+
+</body>
+</html>
