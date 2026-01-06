@@ -69,9 +69,7 @@ const translations = {
     burp_method2: "Sitting on lap – Support chest and chin, gently pat the back",
     burp_method3: "Face-down on lap – Baby lies tummy-down across your lap, rub the back",
     burp_tip_label: "Tip:",
-    burp_tip: "Try for 1–5 minutes. Sometimes the burp is quiet.",
-    back_nav: "Back to Menu"
-
+    burp_tip: "Try for 1–5 minutes. Sometimes the burp is quiet."
 
   },
   zh: {
@@ -144,9 +142,7 @@ const translations = {
     burp_method2: "坐姿拍嗝 — 宝宝坐在腿上，托住胸部和下巴，轻轻拍背",
     burp_method3: "趴腿拍嗝 — 宝宝趴在大腿上，轻轻抚摸背部",
     burp_tip_label: "小提示：",
-    burp_tip: "尝试 1–5 分钟，有时拍嗝是没有声音的。",
-    back_nav: "返回菜单"
-
+    burp_tip: "尝试 1–5 分钟，有时拍嗝是没有声音的。"
 
   }
 };
