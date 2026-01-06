@@ -58,7 +58,16 @@ const translations = {
 
     tips_talk: "Talk and sing to the baby often",
     tips_skin: "Skin-to-skin contact helps bonding",
-    tips_unique: "Every baby is different"
+    tips_unique: "Every baby is different",
+
+    /* Cheatsheet – burping methods */
+    cs_burp_title: "Burping – 3 Gentle Methods",
+    cs_burp_method1: "Over the shoulder – Hold baby upright, gently pat or rub the back",
+    cs_burp_method2: "Sitting on lap – Support chest and chin, gently pat the back",
+    cs_burp_method3: "Face-down on lap – Baby lies tummy-down across your lap, rub the back",
+    cs_burp_note: "Tip:",
+    cs_burp_tip: "Try for 1–5 minutes. Sometimes the burp is quiet."
+
   },
   zh: {
     title: "叔叔育婴速查表",
@@ -119,7 +128,16 @@ const translations = {
 
     tips_talk: "多和宝宝说话、唱歌",
     tips_skin: "肌肤接触有助于建立亲密感",
-    tips_unique: "每个宝宝都是独一无二的"
+    tips_unique: "每个宝宝都是独一无二的",
+
+    /* 速查表 – 拍嗝方法 */
+    cs_burp_title: "拍嗝 — 3 种温和方法",
+    cs_burp_method1: "靠肩拍嗝 — 将宝宝竖抱，轻轻拍或抚摸背部",
+    cs_burp_method2: "坐姿拍嗝 — 让宝宝坐在腿上，托住胸部和下巴，轻拍背部",
+    cs_burp_method3: "趴腿拍嗝 — 宝宝趴在大腿上，轻轻抚摸背部",
+    cs_burp_note: "小提示：",
+    cs_burp_tip: "尝试 1–5 分钟，有时拍嗝是没有声音的。"
+
   }
 };
 
