@@ -1,0 +1,448 @@
+// Memory Book JavaScript with Cloudinary
+let photos = [];
+let currentPhotoIndex = null;
+
+// Initialize Cloudinary
+function initCloudinary() {
+  if (cloudinaryConfig && cloudinaryConfig.cloudName !== "YOUR_CLOUD_NAME") {
+    loadPhotos();
+  } else {
+    showMessage('Cloudinary not configured. Please set up cloudinary-config.js', 'error');
+  }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+  // Load Cloudinary widget script
+  const script = document.createElement('script');
+  script.src = 'https://upload-widget.cloudinary.com/2.60.2/global/all.js';
+  script.onload = () => {
+    initCloudinary();
+  };
+  script.onerror = () => {
+    showMessage('Failed to load Cloudinary. Check your internet connection.', 'error');
+    initCloudinary(); // Still try to load existing photos
+  };
+  document.head.appendChild(script);
+});
+
+// Generate a user ID based on session (for organization)
+function getUserId() {
+  let userId = sessionStorage.getItem('memoryUserId');
+  if (!userId) {
+    userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    sessionStorage.setItem('memoryUserId', userId);
+  }
+  return userId;
+}
+
+// Show message to user
+function showMessage(text, type = 'info') {
+  const messageArea = document.getElementById('messageArea');
+  messageArea.textContent = text;
+  messageArea.className = `message-area ${type}`;
+  messageArea.style.display = 'block';
+  
+  setTimeout(() => {
+    messageArea.style.display = 'none';
+  }, 5000);
+}
+
+// Handle file selection - use Cloudinary Upload Widget
+function openCloudinaryWidget() {
+  if (!cloudinaryConfig || cloudinaryConfig.cloudName === "YOUR_CLOUD_NAME") {
+    showMessage('Cloudinary not configured. Please set up cloudinary-config.js', 'error');
+    return;
+  }
+
+  const userId = getUserId();
+  
+  const container = document.getElementById('cloudinary-widget-container');
+  container.style.display = 'block';
+  
+  const myWidget = cloudinary.createUploadWidget(
+    {
+      cloudName: cloudinaryConfig.cloudName,
+      uploadPreset: cloudinaryConfig.uploadPreset,
+      sources: ['local', 'camera', 'url'],
+      multiple: true,
+      maxFiles: 50,
+      folder: `baby-memories/${userId}`,
+      tags: ['baby-memory-book'],
+      resourceType: 'image',
+      clientAllowedFormats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+      maxFileSize: 10000000, // 10MB
+      showAdvancedOptions: false,
+      cropping: false,
+      theme: 'minimal'
+    },
+    (error, result) => {
+      if (error) {
+        showMessage('Upload failed: ' + (error.message || 'Unknown error'), 'error');
+        container.style.display = 'none';
+        return;
+      }
+
+      if (result && result.event === "success") {
+        // Single file uploaded
+        const data = result.info;
+        photos.push({
+          url: data.secure_url,
+          publicId: data.public_id,
+          caption: '',
+          date: new Date().toISOString().split('T')[0],
+          timestamp: Date.now()
+        });
+        savePhotosToLocal();
+        displayPhotos();
+        showMessage('Photo uploaded successfully!', 'success');
+      } else if (result && result.event === "batch-succeeded") {
+        container.style.display = 'none';
+      } else if (result && result.event === "close") {
+        container.style.display = 'none';
+        return;
+      }
+    }
+  );
+  
+  myWidget.open();
+}
+
+// Handle file input (fallback method)
+document.addEventListener('DOMContentLoaded', () => {
+  const fileInput = document.getElementById('fileInput');
+  const uploadArea = document.getElementById('uploadArea');
+  
+  // Use Cloudinary widget when clicking upload area
+  if (uploadArea) {
+    uploadArea.addEventListener('click', (e) => {
+      if (e.target.tagName !== 'BUTTON') {
+        openCloudinaryWidget();
+      }
+    });
+    
+    // Drag and drop support
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('drag-over');
+    });
+    
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.classList.remove('drag-over');
+    });
+    
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('drag-over');
+      const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+      if (files.length > 0) {
+        uploadFilesDirectly(files);
+      }
+    });
+  }
+  
+  // File input fallback
+  if (fileInput) {
+    fileInput.addEventListener('change', (e) => {
+      const files = Array.from(e.target.files);
+      if (files.length > 0) {
+        uploadFilesDirectly(files);
+      }
+    });
+  }
+});
+
+// Direct file upload (alternative to widget)
+async function uploadFilesDirectly(files) {
+  if (!cloudinaryConfig || cloudinaryConfig.cloudName === "YOUR_CLOUD_NAME") {
+    showMessage('Cloudinary not configured. Please set up cloudinary-config.js', 'error');
+    return;
+  }
+
+  const progressDiv = document.getElementById('uploadProgress');
+  const progressFill = document.getElementById('progressFill');
+  progressDiv.style.display = 'block';
+  
+  const userId = getUserId();
+  const formData = new FormData();
+  formData.append('upload_preset', cloudinaryConfig.uploadPreset);
+  formData.append('folder', `baby-memories/${userId}`);
+  
+  let uploaded = 0;
+  const total = files.length;
+
+  for (const file of files) {
+    try {
+      formData.set('file', file);
+      
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`,
+        {
+          method: 'POST',
+          body: formData
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      photos.push({
+        url: data.secure_url,
+        publicId: data.public_id,
+        caption: '',
+        date: new Date().toISOString().split('T')[0],
+        timestamp: Date.now()
+      });
+      
+      uploaded++;
+      progressFill.style.width = ((uploaded / total) * 100) + '%';
+    } catch (error) {
+      console.error('Upload error:', error);
+      showMessage(`Failed to upload ${file.name}: ${error.message}`, 'error');
+    }
+  }
+
+  progressDiv.style.display = 'none';
+  progressFill.style.width = '0%';
+  
+  savePhotosToLocal();
+  displayPhotos();
+  if (uploaded > 0) {
+    showMessage(`Successfully uploaded ${uploaded} photo(s)!`, 'success');
+  }
+}
+
+// Save photos metadata to localStorage
+function savePhotosToLocal() {
+  const userId = getUserId();
+  localStorage.setItem(`baby_memories_${userId}`, JSON.stringify(photos));
+}
+
+// Load photos from localStorage
+function loadPhotos() {
+  const userId = getUserId();
+  const saved = localStorage.getItem(`baby_memories_${userId}`);
+  
+  if (saved) {
+    try {
+      photos = JSON.parse(saved);
+      displayPhotos();
+    } catch (error) {
+      console.error('Error loading photos:', error);
+    }
+  } else {
+    displayPhotos(); // Show empty state
+  }
+}
+
+// Display photos in gallery
+function displayPhotos() {
+  const gallery = document.getElementById('photoGallery');
+  const generateBtn = document.getElementById('generatePDFBtn');
+  const clearBtn = document.getElementById('clearAllBtn');
+  
+  if (photos.length === 0) {
+    gallery.innerHTML = '<p class="empty-message" data-i18n="memory_no_photos">No photos yet. Upload some memories! 💕</p>';
+    generateBtn.disabled = true;
+    clearBtn.style.display = 'none';
+    // Apply i18n to empty message
+    if (typeof setLanguage === 'function') {
+      const savedLang = localStorage.getItem('lang') || 'en';
+      setLanguage(savedLang);
+    }
+    return;
+  }
+  
+  generateBtn.disabled = false;
+  clearBtn.style.display = 'inline-block';
+  
+  gallery.innerHTML = photos.map((photo, index) => `
+    <div class="photo-item" onclick="openModal(${index})">
+      <img src="${photo.url}" alt="Memory ${index + 1}" loading="lazy">
+      <div class="photo-overlay">
+        <p class="photo-date">${formatDate(photo.date)}</p>
+        ${photo.caption ? `<p class="photo-caption">${escapeHtml(photo.caption)}</p>` : ''}
+      </div>
+      <button class="photo-delete-btn" onclick="event.stopPropagation(); deletePhotoFromGallery(${index})" title="Delete">×</button>
+    </div>
+  `).join('');
+}
+
+// Format date for display
+function formatDate(dateString) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString();
+}
+
+// Escape HTML to prevent XSS
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Open photo in modal
+function openModal(index) {
+  currentPhotoIndex = index;
+  const photo = photos[index];
+  const modal = document.getElementById('photoModal');
+  const modalImage = document.getElementById('modalImage');
+  const captionInput = document.getElementById('captionInput');
+  const dateInput = document.getElementById('dateInput');
+  
+  modalImage.src = photo.url;
+  captionInput.value = photo.caption || '';
+  dateInput.value = photo.date || new Date().toISOString().split('T')[0];
+  modal.style.display = 'block';
+}
+
+// Close modal
+function closeModal() {
+  document.getElementById('photoModal').style.display = 'none';
+  currentPhotoIndex = null;
+}
+
+// Close modal on outside click
+window.onclick = function(event) {
+  const modal = document.getElementById('photoModal');
+  if (event.target === modal) {
+    closeModal();
+  }
+}
+
+// Save caption and date
+function saveCaption() {
+  if (currentPhotoIndex === null) return;
+  
+  const captionInput = document.getElementById('captionInput');
+  const dateInput = document.getElementById('dateInput');
+  const saveBtn = document.querySelector('.save-caption-btn');
+  
+  // Provide immediate UI feedback
+  const originalText = saveBtn.textContent;
+  saveBtn.textContent = '✓ Saved!';
+  saveBtn.disabled = true;
+  
+  photos[currentPhotoIndex].caption = captionInput.value.trim();
+  photos[currentPhotoIndex].date = dateInput.value;
+  
+  savePhotosToLocal();
+  displayPhotos();
+  showMessage('Caption saved!', 'success');
+  
+  // Reset button after 1.5 seconds
+  setTimeout(() => {
+    saveBtn.textContent = originalText;
+    saveBtn.disabled = false;
+  }, 1500);
+}
+
+// Delete photo from gallery
+async function deletePhotoFromGallery(index) {
+  if (!confirm('Are you sure you want to delete this photo?')) return;
+  
+  const photo = photos[index];
+  
+  // Delete from Cloudinary (optional - requires API secret for signed requests)
+  // For now, we'll just remove from local storage
+  // Note: Photo will remain in Cloudinary but won't be accessible via your app
+  
+  // Remove from photos array
+  photos.splice(index, 1);
+  savePhotosToLocal();
+  displayPhotos();
+  showMessage('Photo deleted', 'success');
+}
+
+// Delete photo from modal
+function deletePhoto() {
+  if (currentPhotoIndex === null) return;
+  deletePhotoFromGallery(currentPhotoIndex);
+  closeModal();
+}
+
+// Clear all photos
+async function clearAllPhotos() {
+  if (!confirm('Are you sure you want to delete ALL photos? This cannot be undone.')) return;
+  
+  // Clear local storage
+  const userId = getUserId();
+  photos = [];
+  localStorage.removeItem(`baby_memories_${userId}`);
+  displayPhotos();
+  showMessage('All photos deleted from memory book', 'success');
+  // Note: Photos remain in Cloudinary but won't be shown in your app
+}
+
+// Generate PDF from photos
+async function generatePDF() {
+  if (photos.length === 0) {
+    showMessage('No photos to generate PDF', 'error');
+    return;
+  }
+  
+  showMessage('Generating PDF... This may take a moment.', 'info');
+  
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4'
+  });
+  
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const margin = 10;
+  const imgWidth = pageWidth - (margin * 2);
+  const imgHeight = (pageHeight - (margin * 2)) * 0.8;
+  const textHeight = pageHeight - margin - imgHeight - margin;
+  
+  try {
+    for (let i = 0; i < photos.length; i++) {
+      if (i > 0) {
+        pdf.addPage();
+      }
+      
+      const photo = photos[i];
+      
+      // Load image
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      
+      await new Promise((resolve, reject) => {
+        img.onload = () => {
+          // Calculate dimensions to fit page
+          const ratio = Math.min(imgWidth / img.width, imgHeight / img.height);
+          const width = img.width * ratio;
+          const height = img.height * ratio;
+          const x = (pageWidth - width) / 2;
+          const y = margin;
+          
+          // Add image
+          pdf.addImage(img, 'JPEG', x, y, width, height);
+          
+          // Add caption and date
+          pdf.setFontSize(12);
+          pdf.text(photo.caption || 'Baby Memory', margin, pageHeight - textHeight);
+          pdf.setFontSize(10);
+          pdf.text(formatDate(photo.date), margin, pageHeight - textHeight + 7);
+          
+          resolve();
+        };
+        img.onerror = reject;
+        img.src = photo.url;
+      });
+    }
+    
+    // Save PDF
+    const filename = `baby-memories-${new Date().toISOString().split('T')[0]}.pdf`;
+    pdf.save(filename);
+    showMessage('PDF generated successfully!', 'success');
+  } catch (error) {
+    console.error('PDF generation error:', error);
+    showMessage('Error generating PDF: ' + error.message, 'error');
+  }
+}

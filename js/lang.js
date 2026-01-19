@@ -8,6 +8,7 @@ const translations = {
     nav_warning: "Warning Signs",
     nav_tips: "Baby Care Tips",
     nav_burping: "Burping Guide",
+    nav_memory_book: "📸 Memory Book",
     logout: "Logout",
 
     /* Cheatsheet page */
@@ -69,7 +70,20 @@ const translations = {
     burp_method2: "Sitting on lap – Support chest and chin, gently pat the back",
     burp_method3: "Face-down on lap – Baby lies tummy-down across your lap, rub the back",
     burp_tip_label: "Tip:",
-    burp_tip: "Try for 1–5 minutes. Sometimes the burp is quiet."
+    burp_tip: "Try for 1–5 minutes. Sometimes the burp is quiet.",
+
+    /* Memory Book page */
+    memory_title: "📸 Baby Memory Book",
+    memory_upload_text: "📷 Click or drag photos here to upload",
+    memory_select_photos: "Select Photos",
+    memory_uploading: "Uploading...",
+    memory_gallery_title: "Memories",
+    memory_generate_pdf: "Generate PDF",
+    memory_clear_all: "Clear All",
+    memory_no_photos: "No photos yet. Upload some memories! 💕",
+    memory_add_caption: "Add caption...",
+    memory_save: "Save",
+    memory_delete: "Delete Photo"
 
   },
   zh: {
@@ -81,6 +95,7 @@ const translations = {
     nav_warning: "危险征兆",
     nav_tips: "育婴小贴士",
     nav_burping: "拍嗝指南",
+    nav_memory_book: "📸 宝宝成长相册",
     logout: "退出登录",
 
     /* Cheatsheet page */
@@ -142,7 +157,20 @@ const translations = {
     burp_method2: "坐姿拍嗝 — 宝宝坐在腿上，托住胸部和下巴，轻轻拍背",
     burp_method3: "趴腿拍嗝 — 宝宝趴在大腿上，轻轻抚摸背部",
     burp_tip_label: "小提示：",
-    burp_tip: "尝试 1–5 分钟，有时拍嗝是没有声音的。"
+    burp_tip: "尝试 1–5 分钟，有时拍嗝是没有声音的。",
+
+    /* 成长相册页面 */
+    memory_title: "📸 宝宝成长相册",
+    memory_upload_text: "📷 点击或拖拽照片到这里上传",
+    memory_select_photos: "选择照片",
+    memory_uploading: "上传中...",
+    memory_gallery_title: "美好回忆",
+    memory_generate_pdf: "生成PDF",
+    memory_clear_all: "清除全部",
+    memory_no_photos: "还没有照片。上传一些美好回忆吧！💕",
+    memory_add_caption: "添加说明...",
+    memory_save: "保存",
+    memory_delete: "删除照片"
 
   }
 };
