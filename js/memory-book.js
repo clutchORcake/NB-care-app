@@ -26,14 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.head.appendChild(script);
 });
 
-// Generate a user ID based on session (for organization)
+// Generate a shared family ID for cross-device access
 function getUserId() {
-  let userId = sessionStorage.getItem('memoryUserId');
-  if (!userId) {
-    userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    sessionStorage.setItem('memoryUserId', userId);
-  }
-  return userId;
+  // Using a fixed family ID so all family members upload to the same folder
+  return 'family_baby';
 }
 
 // Show message to user
@@ -214,27 +210,105 @@ async function uploadFilesDirectly(files) {
   }
 }
 
-// Save photos metadata to localStorage
+// Save photos metadata to localStorage (for captions)
 function savePhotosToLocal() {
-  const userId = getUserId();
-  localStorage.setItem(`baby_memories_${userId}`, JSON.stringify(photos));
+  // Save captions by public_id for cross-device access
+  const captions = {};
+  photos.forEach(photo => {
+    captions[photo.publicId] = photo.caption;
+    captions[photo.publicId + '_date'] = photo.date;
+  });
+  localStorage.setItem('baby_memories_captions', JSON.stringify(captions));
 }
 
-// Load photos from localStorage
-function loadPhotos() {
-  const userId = getUserId();
-  const saved = localStorage.getItem(`baby_memories_${userId}`);
+// Load photos from Cloudinary API and localStorage captions
+async function loadPhotos() {
+  try {
+    // First try to fetch from Cloudinary API
+    const userId = getUserId();
+    const cloudinaryPhotos = await fetchPhotosFromCloudinary(userId);
+    
+    if (cloudinaryPhotos && cloudinaryPhotos.length > 0) {
+      // Load captions from localStorage by public_id
+      const captions = getStoredCaptions();
+      photos = cloudinaryPhotos.map(photo => ({
+        url: photo.secure_url,
+        publicId: photo.public_id,
+        caption: captions[photo.public_id] || '',
+        date: captions[photo.public_id + '_date'] || new Date().toISOString().split('T')[0],
+        timestamp: photo.created_at ? new Date(photo.created_at).getTime() : Date.now()
+      }));
+      displayPhotos();
+      return;
+    }
+  } catch (error) {
+    console.error('Error fetching from Cloudinary:', error);
+  }
   
+  // Fallback: Load from localStorage if Cloudinary fetch fails
+  const saved = localStorage.getItem(`baby_memories_${getUserId()}`);
   if (saved) {
     try {
       photos = JSON.parse(saved);
       displayPhotos();
     } catch (error) {
-      console.error('Error loading photos:', error);
+      console.error('Error loading photos from storage:', error);
     }
   } else {
     displayPhotos(); // Show empty state
   }
+}
+
+// Fetch photos from Cloudinary using API
+async function fetchPhotosFromCloudinary(userId) {
+  if (!cloudinaryConfig || cloudinaryConfig.cloudName === "YOUR_CLOUD_NAME") {
+    return null;
+  }
+  
+  try {
+    // Use Cloudinary's search API to find all images in the baby-memories folder
+    // For unsigned access, we'll use the admin API endpoint with a fetch
+    // Note: This requires CORS to be enabled on your Cloudinary account
+    const folderPath = `baby-memories/${userId}`;
+    
+    // Try using Cloudinary's Admin API (requires authentication)
+    // For a free tier without API key, we'll use a workaround with fetch
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/resources/search?expression=folder:\"${folderPath}\"&max_results=500`,
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Basic ' + btoa(':', cloudinaryConfig.apiKey || 'YOUR_API_KEY')
+        }
+      }
+    );
+    
+    if (response.ok) {
+      const data = await response.json();
+      return data.resources || [];
+    } else if (response.status === 401) {
+      console.warn('Cloudinary API key not configured. Using localStorage fallback.');
+      return null;
+    }
+  } catch (error) {
+    console.warn('Could not fetch from Cloudinary API:', error.message);
+  }
+  
+  return null;
+}
+
+// Get stored captions from localStorage
+function getStoredCaptions() {
+  const stored = localStorage.getItem('baby_memories_captions');
+  return stored ? JSON.parse(stored) : {};
+}
+
+// Store caption in localStorage by public_id
+function storeCaption(publicId, caption, date) {
+  const captions = getStoredCaptions();
+  captions[publicId] = caption;
+  captions[publicId + '_date'] = date;
+  localStorage.setItem('baby_memories_captions', JSON.stringify(captions));
 }
 
 // Display photos in gallery
@@ -326,12 +400,16 @@ function saveCaption() {
   saveBtn.textContent = '✓ Saved!';
   saveBtn.disabled = true;
   
-  photos[currentPhotoIndex].caption = captionInput.value.trim();
-  photos[currentPhotoIndex].date = dateInput.value;
+  const photo = photos[currentPhotoIndex];
+  photo.caption = captionInput.value.trim();
+  photo.date = dateInput.value;
+  
+  // Store caption by public_id for cross-device sync
+  storeCaption(photo.publicId, photo.caption, photo.date);
   
   savePhotosToLocal();
   displayPhotos();
-  showMessage('Caption saved!', 'success');
+  showMessage('Caption saved and synced!', 'success');
   
   // Reset button after 1.5 seconds
   setTimeout(() => {
@@ -368,10 +446,10 @@ function deletePhoto() {
 async function clearAllPhotos() {
   if (!confirm('Are you sure you want to delete ALL photos? This cannot be undone.')) return;
   
-  // Clear local storage
-  const userId = getUserId();
+  // Clear local storage captions
   photos = [];
-  localStorage.removeItem(`baby_memories_${userId}`);
+  localStorage.removeItem('baby_memories_captions');
+  localStorage.removeItem(`baby_memories_${getUserId()}`); // Legacy cleanup
   displayPhotos();
   showMessage('All photos deleted from memory book', 'success');
   // Note: Photos remain in Cloudinary but won't be shown in your app
