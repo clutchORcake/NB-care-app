@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+  if (sessionStorage.getItem("authenticated") !== "true") {
+    window.location.href = "index.html";
+  }
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Book</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Fix for memory book sections - override absolute positioning */
+    .upload-section,
+    .gallery-section {
+      position: relative !important;
+      padding: 0 !important;
+      width: 100% !important;
+      margin-bottom: 30px;
+    }
+    
+    /* Allow modal/overlays to escape overflow:hidden */
+    body {
+      overflow: visible !important;
+    }
+    
+    .page-container {
+      overflow: visible !important;
+    }
+    
+    /* Ensure Cloudinary widget can display above everything */
+    .cloudinary-widget,
+    .cld-hidden,
+    [role="dialog"] {
+      z-index: 10000 !important;
+      position: fixed !important;
+    }
+  </style>
+  
+  <!-- jsPDF for PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="lang-toggle">
+    <button onclick="setLanguage('en')">EN</button>
+    <button onclick="setLanguage('zh')">中文</button>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/cloudinary-config.js"></script>
+  <script src="js/memory-book.js"></script>
+
+  <div class="page-container">
+    <header>
+      <h1 data-i18n="memory_title">📸 Baby Memory Book</h1>
+      <nav>
+        <a href="nav.html">⬅ Back to Menu</a>
+      </nav>
+    </header>
+
+    <!-- Upload Section -->
+    <section class="upload-section">
+      <div class="upload-area" id="uploadArea">
+        <input type="file" id="fileInput" multiple accept="image/*" style="display:none;">
+        <div class="upload-content">
+          <p data-i18n="memory_upload_text">📷 Click or drag photos here to upload</p>
+          <button onclick="openCloudinaryWidget()" data-i18n="memory_select_photos">Select Photos</button>
+        </div>
+      </div>
+      <!-- Container for Cloudinary widget -->
+      <div id="cloudinary-widget-container" style="display:none;"></div>
+      <div id="uploadProgress" class="upload-progress" style="display:none;">
+        <p data-i18n="memory_uploading">Uploading...</p>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section">
+      <div class="gallery-header">
+        <h2 data-i18n="memory_gallery_title">Memories</h2>
+        <div class="gallery-actions">
+          <button onclick="generatePDF()" id="generatePDFBtn" data-i18n="memory_generate_pdf" disabled>Generate PDF</button>
+          <button onclick="clearAllPhotos()" id="clearAllBtn" data-i18n="memory_clear_all" style="display:none;">Clear All</button>
+        </div>
+      </div>
+      <div id="photoGallery" class="photo-gallery">
+        <p class="empty-message" data-i18n="memory_no_photos">No photos yet. Upload some memories! 💕</p>
+      </div>
+    </section>
+
+    <!-- Loading/Error Messages -->
+    <div id="messageArea" class="message-area"></div>
+  </div>
+
+  <!-- Photo Modal for Full View -->
+  <div id="photoModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal()">&times;</span>
+      <img id="modalImage" src="" alt="Photo">
+      <div class="modal-caption">
+        <input type="text" id="captionInput" placeholder="Add caption..." data-i18n-placeholder="memory_add_caption">
+        <input type="date" id="dateInput">
+        <button onclick="saveCaption()" class="save-caption-btn" data-i18n="memory_save">Save</button>
+      </div>
+      <button onclick="deletePhoto()" class="delete-btn" data-i18n="memory_delete">Delete Photo</button>
+    </div>
+  </div>
+
+</body>
+</html>
+
+<!--
+CLOUDINARY SETUP INSTRUCTIONS:
+See CLOUDINARY_SETUP.md for detailed setup instructions.
+
+Quick setup:
+1. Sign up at https://cloudinary.com/users/register_free (free, no credit card!)
+2. Get your Cloud Name from Dashboard
+3. Create an Upload Preset: Settings > Upload > Upload presets > Add upload preset
+4. Set preset to "Unsigned" for easier setup
+5. Copy preset name and cloud name to cloudinary-config.js
+-->

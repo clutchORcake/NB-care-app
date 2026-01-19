@@ -1,4 +1,4 @@
-const CACHE_NAME = "baby-cheatsheet-cache-v1";
+const CACHE_NAME = "baby-cheatsheet-cache-v2";
 const urlsToCache = [
   "/",
   "/index.html",
@@ -8,8 +8,14 @@ const urlsToCache = [
   "/signals.html",
   "/tips.html",
   "/warning.html",
+  "/burping.html",
+  "/memory-book.html",
   "/style.css",
   "/js/script.js",
+  "/js/lang.js",
+  "/js/cloudinary-config.js",
+  "/js/memory-book.js",
+  "/js/pageflip.js",
   "/images/denied.png"
 ];
 
